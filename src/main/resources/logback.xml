@@ -1,0 +1,42 @@
+<configuration>
+    <property name="LOG_DIR" value="./logs"/>
+    <timestamp key="bySecond" datePattern="yyyyMMdd'T'HHmmss" />
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/tests-${bySecond}.log</file>
+        <!-- TimeBasedRollingPolicy: daily | 날짜(일자)별로 파일 보관 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${LOG_DIR}/tests-%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- or whenever the file size reaches 100MB -->
+                <!-- logfile size max setting | 로그파일의 크기 제한 설정 -->
+                <maxFileSize>50MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!-- keep 30 days' worth of history -->
+            <!-- maximum number of archive files to keep -->
+            <!-- 보관할 최대 보관 파일 수를 제어;설정값이 90이라면 90일이 지난 파일은 삭제가 됨 -->
+            <maxHistory>90</maxHistory>
+        </rollingPolicy>
+        <append>true</append>
+        <encoder>
+            <pattern>[%d{yyyyMMdd HH:mm:ss} %-5level %logger.%M-%line] %msg%n</pattern>
+        </encoder>
+        <!-- ThresholdFilter: 지정된 level 임계점(threshold;level값)에 대하여 로그 이벤트를 필터링 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>
